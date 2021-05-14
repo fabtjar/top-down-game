@@ -6,7 +6,11 @@ WIDTH = 320
 HEIGHT = 240
 SCALE = 3
 
-FRAME_RATE = Uint32(1000 // 60)
+FPS = 60
+
+frame_delay = 1000 // FPS
+frame_start = 0
+frame_time = 0
 
 SDL_Init(SDL_INIT_VIDEO)
 
@@ -40,6 +44,8 @@ while running:
     SDL_PollEvent(event)
     if event.type == SDL_QUIT:
         running = False
+        
+    frame_start = SDL_GetTicks()
     
     if x + vel_x < 0 or x + vel_x + 16 > WIDTH:
         vel_x *= -1
@@ -52,7 +58,11 @@ while running:
     SDL_RenderClear(renderer)
     SDL_RenderCopy(renderer, texture, SDL_Rect(0, 0, 16, 16), SDL_Rect(x, y, 16, 16))
     SDL_RenderPresent(renderer)
-    SDL_Delay(FRAME_RATE)
+    
+    frame_time = SDL_GetTicks() - frame_start
+    
+    if frame_delay > frame_time:
+        SDL_Delay(frame_delay)
 
 SDL_DestroyWindow(window)
 SDL_DestroyRenderer(renderer)
